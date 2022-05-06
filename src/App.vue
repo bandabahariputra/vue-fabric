@@ -1,6 +1,13 @@
 <script setup>
   import { onMounted, ref } from 'vue'
-  import fabric, { textbox, background, image, rectangle } from './fabric-func/'
+  import fabric, {
+    textbox,
+    background,
+    image,
+    rectangle
+  } from './fabric-func/'
+  import { changeFill } from './fabric-func/toolSetting'
+  import Toolbar from './components/Toolbar.vue'
 
   let canvas = null
   let mediaRecorder = null
@@ -14,6 +21,8 @@
     'image/jpg',
     'image/jpeg'
   ]
+
+  const selectedObject = ref(null)
 
   onMounted(() => {
     canvas = new fabric.Canvas(canvasRef.value)
@@ -31,7 +40,20 @@
     mediaRecorder.onstop = () => {
       onMediaRecorderStop(chunks.value)
     }
+
+    canvas.on({
+      'selection:updated': handleSelectObject,
+      'selection:created': handleSelectObject
+    })
+
+    canvas.on('selection:cleared', () => {
+      selectedObject.value = null
+    })
   })
+
+  const handleSelectObject = (obj) => {
+    selectedObject.value = obj.selected[0]
+  }
 
   const clear = () => {
     const context = canvasRef.value.getContext('2d')
@@ -75,6 +97,11 @@
 
   const addRectangle = () => rectangle.add(canvas)
 
+  // emits
+  const handleChangeColor = (color) => {
+    changeFill(canvas, color)
+  }
+
   // save to video
   const startRecord = () => {
     recording.value = true
@@ -107,9 +134,18 @@
 <template>
   <div class="fabric">
     <h1>Vue Fabric.js</h1>
-    <div>
+    <div class="canvas-wrapper">
       <canvas ref="canvasRef" height="500" width="500"></canvas>
     </div>
+    <h3 v-if="selectedObject">toolbar menu</h3>
+    <div class="menus">
+      <Toolbar
+        v-if="selectedObject"
+        :object="selectedObject"
+        @handleChangeColor="handleChangeColor"
+      />
+    </div>
+    <hr v-if="selectedObject">
     <h3>canvas menu</h3>
     <div class="menus">
       <button @click="clear">clear canvas</button>
@@ -159,7 +195,7 @@
   margin: 0 auto;
 }
 
-.fabric div:first-child {
+.fabric .canvas-wrapper {
   border: 1px solid #333;
 }
 
