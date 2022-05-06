@@ -18,3 +18,38 @@ export const deleteObject = (eventData, transform) => {
   canvas.remove(target)
   canvas.requestRenderAll()
 }
+
+export const runAllAnimation = (canvas) => {
+  canvas.getObjects().forEach((item) => {
+    canvas.discardActiveObject()
+
+    if (item.animateEase) {
+      const direction = item.animateEase.to === 'left' || item.animateEase.to === 'right' ? 'left' : 'top'
+
+      let current
+
+      if (direction === 'left') {
+        current = 'currentLeft'
+      } else {
+        current = 'currentTop'
+      }
+
+      let move
+
+      if (item.animateEase.to === 'left' || item.animateEase.to === 'top') {
+        move = item.animateEase[current] - item.animateEase.move
+      } else {
+        move = item.animateEase[current] + item.animateEase.move
+      }
+      
+      item.animate(direction, item[direction] === item.animateEase[current] ? move : item.animateEase[current], {
+        duration: item.animateEase.duration * 1000,
+        onChange: canvas.renderAll.bind(canvas),
+        onComplete: function() {
+          runAllAnimation(canvas)
+        },
+        easing: fabric.util.ease[item.animateEase.ease]
+      })
+    }
+  })
+}

@@ -6,7 +6,8 @@
     image,
     rectangle
   } from './fabric-func/'
-  import { changeFill } from './fabric-func/toolSetting'
+  import { runAllAnimation } from './fabric-func/globalFunc'
+  import { changeFill, addAnimateEase } from './fabric-func/toolSetting'
   import Toolbar from './components/Toolbar.vue'
 
   let canvas = null
@@ -60,6 +61,10 @@
     context.clearRect(0, 0, canvasRef.value.width, canvasRef.value.height)
   }
 
+  const runAnimation = () => {
+    runAllAnimation(canvas)
+  }
+
   const addText = () => {
     if (text.value) {
       textbox.add(canvas, text.value)
@@ -102,6 +107,10 @@
     changeFill(canvas, color)
   }
 
+  const handleAddAnimateEase = (data) => {
+    addAnimateEase(canvas, data)
+  }
+
   // save to video
   const startRecord = () => {
     recording.value = true
@@ -111,6 +120,7 @@
   const stopRecord = () => {
     mediaRecorder.stop()
     recording.value = false
+    window.location.reload()
   }
 
   const onMediaRecorderStop = (chunks) => {
@@ -143,12 +153,14 @@
         v-if="selectedObject"
         :object="selectedObject"
         @handleChangeColor="handleChangeColor"
+        @handleAddAnimateEase="handleAddAnimateEase"
       />
     </div>
     <hr v-if="selectedObject">
     <h3>canvas menu</h3>
     <div class="menus">
       <button @click="clear">clear canvas</button>
+      <button @click="runAnimation">run animation</button>
     </div>
     <div class="menus">
       <span>add text: </span>
@@ -174,7 +186,7 @@
         <span v-if="recording">recording</span>
         <span v-else>start record</span>
       </button>
-      <button @click="stopRecord">stop record</button>
+      <button v-if="recording" @click="stopRecord">stop record</button>
     </div>
   </div>
 </template>
@@ -195,7 +207,7 @@
   margin: 0 auto;
 }
 
-.fabric .canvas-wrapper {
+canvas {
   border: 1px solid #333;
 }
 

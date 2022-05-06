@@ -9,6 +9,10 @@ const add = (canvas) => {
     fill: 'yellow'
   })
 
+  const getRect = canvas.getObjects().filter((item) => item.name && item.name.includes('rect'))
+
+  rect.name = 'rect-' + Number(getRect.length + 1)
+
   canvas.add(rect)
 }
 
