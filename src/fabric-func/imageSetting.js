@@ -7,6 +7,10 @@ const add = (canvas, image) => {
       const newImage = new fabric.Image(imgObj)
       canvas.centerObject(newImage)
 
+      const getImage = canvas.getObjects().filter((item) => item.name && item.name.includes('image'))
+
+      newImage.name = 'image-' + Number(getImage.length + 1)
+
       canvas.add(newImage)
     }
   }

@@ -7,6 +7,10 @@ const add = (canvas, text) => {
     fontSize: 16
   })
 
+  const getText = canvas.getObjects().filter((item) => item.name && item.name.includes('textbox'))
+
+  newText.name = 'textbox-' + Number(getText.length + 1)
+
   canvas.add(newText)
 }
 
