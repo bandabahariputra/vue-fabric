@@ -15,6 +15,7 @@
   const to = ref('right')
   const duration = ref(1)
   const ease = ref('easeInQuad')
+  const isLoop = ref(false)
 
   const handleChangeColor = () => {
     emits('handleChangeColor', color.value)
@@ -25,7 +26,8 @@
       move: move.value,
       to: to.value,
       duration: duration.value,
-      ease: ease.value
+      ease: ease.value,
+      isLoop: isLoop.value
     }
 
     emits('handleAddAnimateEase', data)
@@ -59,6 +61,9 @@
         <option>easeInQuad</option>
         <option>easeInBack</option>
       </select>
+      <br>
+      <span>loop: </span>
+      <input type="checkbox" v-model="isLoop">
       <br>
       <button @click="handleAddAnimateEase">add animate</button>
     </div>

@@ -10,7 +10,8 @@ export const addAnimateEase = (canvas, data) => {
     move: data.move,
     to: data.to,
     duration: data.duration,
-    ease: data.ease
+    ease: data.ease,
+    isLoop: data.isLoop
   }
 
   canvas.renderAll()

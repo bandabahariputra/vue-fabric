@@ -45,7 +45,11 @@ export const runAllAnimation = (canvas) => {
       item.animate(direction, item[direction] === item.animateEase[current] ? move : item.animateEase[current], {
         duration: item.animateEase.duration * 1000,
         onChange: canvas.renderAll.bind(canvas),
-        onComplete: () => runAllAnimation(canvas),
+        onComplete: () => {
+          if (item.animateEase.isLoop) {
+            runAllAnimation(canvas)
+          }
+        },
         easing: fabric.util.ease[item.animateEase.ease]
       })
     }
