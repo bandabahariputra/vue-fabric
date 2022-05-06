@@ -156,7 +156,7 @@
       <button @click="addText">add text</button>
     </div>
     <div class="menus">
-      <span>change backgound: </span>
+      <span>change backgound image: </span>
       <input type="file" @change="changeBg">
     </div>
     <div class="menus">
